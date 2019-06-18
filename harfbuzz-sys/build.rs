@@ -13,7 +13,31 @@ fn main() {
 
     println!("cargo:rerun-if-env-changed=HARFBUZZ_SYS_NO_PKG_CONFIG");
     if target.contains("wasm32") || env::var_os("HARFBUZZ_SYS_NO_PKG_CONFIG").is_none() {
-        if pkg_config::probe_library("harfbuzz").is_ok() {
+        if let Ok(lib) = pkg_config::probe_library("harfbuzz") {
+            let mut include_flags = String::new();
+            for path in lib.include_paths.iter() {
+                match path.to_str() {
+                    Some(path) => include_flags.push_str(&format!("-I{} ", path)),
+                    None => (),
+                }
+            }
+            println!("cargo:include_flags={}", include_flags);
+
+            let mut libdir_flags = String::new();
+            for libdir in lib.link_paths.iter() {
+                match libdir.to_str() {
+                    Some(path) => libdir_flags.push_str(&format!("-L{} ", path)),
+                    None => (),
+                }
+            }
+            println!("cargo:libdir_flags={}", libdir_flags);
+
+            let mut link_flags = String::new();
+            for l in lib.libs.iter() {
+                link_flags.push_str(&format!("-l{} ", l))
+            }
+            println!("cargo:link_flags=-l:libharfbuzz.a -l:libharfbuzz-icu.a");
+
             return;
         }
     }
