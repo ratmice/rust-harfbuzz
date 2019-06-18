@@ -53,6 +53,8 @@ fn main() {
             out_dir.join("lib").display()
         );
         println!("cargo:rustc-link-lib=static=harfbuzz");
+        println!("cargo:libdir_flags=-L{}/lib", out_dir.display());
+        println!("cargo:link_flags=-l:libharfbuzz.a -l:libharfbuzz-icu.a");
     }
 
     // DEP_HARFBUZZ_INCLUDE has the path of the vendored harfbuzz.
