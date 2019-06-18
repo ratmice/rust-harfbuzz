@@ -25,16 +25,21 @@ endif
 
 CFLAGS += $(FLAGS)
 CXXFLAGS += $(FLAGS)
+LDFLAGS += -L$(DEP_GRAPHITE2_LIBDIR) $(DEP_GRAPHITE2_LINK)
+LDFLAGS += $(DEP_ICU_LIBDIR_FLAGS) $(DEP_ICU_LINK_FLAGS)
+CPPFLAGS += -I$(DEP_GRAPHITE2_INCLUDE)
+CPPFLAGS += $(DEP_ICU_INCLUDE_FLAGS)
 
 CONFIGURE_FLAGS = \
 	--prefix=$(OUT_DIR) \
 	--host=$(TARGET) \
 	--enable-static \
 	--disable-shared \
-	--without-icu \
+	--with-icu \
 	--without-freetype \
 	--without-glib \
-	--with-coretext=auto
+	--with-coretext=auto \
+	--with-graphite2=yes
 
 # Create a unique temporary build directory
 BUILD_DIR := $(shell mktemp -d $(OUT_DIR)/rust_build.XXXXX)
@@ -46,7 +51,7 @@ all:
 	$(MAKE) -f $(CARGO_MANIFEST_DIR)/makefile.touch touch HARFBUZZ="$(BUILD_DIR)"
 	# Configure and build in BUILD_DIR, install from BUILD_DIR into OUT_DIR.
 	cd $(BUILD_DIR) && \
-	  ./configure $(CONFIGURE_FLAGS) CFLAGS="$(CFLAGS)" CXXFLAGS="$(CXXFLAGS)" CPPFLAGS="$(CPPFLAGS)" && \
+	  ./configure $(CONFIGURE_FLAGS) CFLAGS="$(CFLAGS)" CXXFLAGS="$(CXXFLAGS)" CPPFLAGS="$(CPPFLAGS)" LDFLAGS="$(LDFLAGS)" && \
 	  make -j$(NUM_JOBS) && \
 	  make install
 	# Remove the no-longer-needed BUILD_DIR to save space.
