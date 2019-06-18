@@ -36,7 +36,7 @@ fn main() {
             for l in lib.libs.iter() {
                 link_flags.push_str(&format!("-l{} ", l))
             }
-            println!("cargo:link_flags=-l:libharfbuzz.a -l:libharfbuzz-icu.a");
+            println!("cargo:link_flags={}", link_flags);
 
             return;
         }
