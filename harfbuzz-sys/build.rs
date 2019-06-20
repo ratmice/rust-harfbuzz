@@ -5,16 +5,18 @@ extern crate pkg_config;
 
 fn emit_special_c_env_vars(libs: Vec<pkg_config::Library>) {
     {
-        let mut include_flags = String::new();
+        let mut include_dirs = String::new();
         for lib in libs.iter() {
             for path in lib.include_paths.iter() {
                 match path.to_str() {
-                    Some(path) => include_flags.push_str(&format!("-I{} ", path)),
+                    Some(path) => {
+                        include_dirs.push_str(&format!("{}:", path));
+                    }
                     None => (),
                 }
             }
         }
-        println!("cargo:include_flags={}", include_flags);
+        println!("cargo:include_dirs={}", include_dirs);
     }
 
     {
