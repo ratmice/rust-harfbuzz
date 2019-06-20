@@ -5,18 +5,12 @@ extern crate pkg_config;
 
 fn emit_special_c_env_vars(libs: Vec<pkg_config::Library>) {
     {
-        let mut include_dirs = String::new();
+        let mut all_include_dirs: Vec<std::path::PathBuf> = Vec::new();
         for lib in libs.iter() {
-            for path in lib.include_paths.iter() {
-                match path.to_str() {
-                    Some(path) => {
-                        include_dirs.push_str(&format!("{}:", path));
-                    }
-                    None => (),
-                }
-            }
+            all_include_dirs.extend(lib.include_paths.clone());
         }
-        println!("cargo:include_dirs={}", include_dirs);
+        let ser_include_dirs = serde_json::to_string(&all_include_dirs).unwrap();
+        println!("cargo:include_dirs={}", base64::encode(&ser_include_dirs));
     }
 
     {
