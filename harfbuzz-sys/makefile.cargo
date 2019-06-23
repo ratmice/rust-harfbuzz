@@ -53,7 +53,7 @@ all:
 	cd $(BUILD_DIR) && \
 	  ./configure $(CONFIGURE_FLAGS) CFLAGS="$(CFLAGS)" CXXFLAGS="$(CXXFLAGS)" CPPFLAGS="$(CPPFLAGS)" LDFLAGS="$(LDFLAGS)" && \
 	  make -j$(NUM_JOBS) && \
-	  make install
+	  make install || (cat $(BUILD_DIR)/config.log && exit 1)
 	# Remove the no-longer-needed BUILD_DIR to save space.
 	rm -rf $(BUILD_DIR)
 
