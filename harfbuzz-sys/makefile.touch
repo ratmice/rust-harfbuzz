@@ -31,6 +31,7 @@ TOUCH_FILES = $(wildcard \
 	$(HARFBUZZ)/*/*/*/*/Makefile.* \
 	$(HARFBUZZ)/gtk-doc.make \
 	$(HARFBUZZ)/src/hb-version.* \
+	$(HARFBUZZ)/src/*.rl \
 	)
 
 touch:
